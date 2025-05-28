@@ -3265,3 +3265,219 @@ window.addEventListener("load", () => {
 });
 
 </script>
+
+
+
+<script>
+/// Adding Sample data
+
+
+// Sample data generator for Pakistani Receipt Management System
+const generateSampleData = async () => {
+    const pakistaniNames = [
+        'محمد احمد', 'علی حسن', 'فاطمہ خان', 'عائشہ علی', 'حسن محمود',
+        'زینب احمد', 'عثمان شاہ', 'خدیجہ بیگم', 'ابراہیم خان', 'مریم فاطمہ',
+        'یوسف علی', 'صفیہ خاتون', 'عمر فاروق', 'رقیہ بیگم', 'طارق محمود',
+        'نائلہ شاہ', 'سلمان احمد', 'رحمہ خان', 'کریم بخش', 'شاہین بیگم'
+    ];
+
+    const mobileNumbers = [
+        '03001234567', '03211234567', '03451234567', '03331234567', '03041234567',
+        '03015678901', '03225678901', '03465678901', '03345678901', '03055678901',
+        '03019876543', '03239876543', '03479876543', '03359876543', '03069876543',
+        '03012345678', '03242345678', '03482345678', '03362345678', '03072345678'
+    ];
+
+    const addresses = [
+        'گلبرگ، لاہور', 'کراچی کمپنی، کراچی', 'بلیو ایریا، اسلام آباد', 'جوہر ٹاؤن، لاہور',
+        'ڈیفنس، کراچی', 'ایف ۔ 10، اسلام آباد', 'ماڈل ٹاؤن، لاہور', 'گلشن اقبال، کراچی',
+        'جی ۔ 9، اسلام آباد', 'کینٹ، لاہور', 'کلفٹن، کراچی', 'آئی ۔ 8، اسلام آباد',
+        'فیصل آباد روڈ', 'راولپنڈی کینٹ', 'ملتان کینٹ', 'پشاور یونیورسٹی',
+        'کوئٹہ کینٹ', 'حیدرآباد سٹی', 'سکھر کینٹ', 'لاڑکانہ سٹی'
+    ];
+
+    const items = [
+        'موبائل فون Samsung A54', 'لیپ ٹاپ HP Pavilion', 'ایئر کنڈیشنر Haier', 'LED TV 43 inch',
+        'ریفریجریٹر LG', 'واشنگ مشین Dawlance', 'موٹرسائیکل Honda 125', 'ایئر کولر Super Asia',
+        'مائیکروویو Panasonic', 'گیزر Pak Electric', 'فین Ceiling GFC', 'آئرن Phillips',
+        'ہیئر ڈرائر Nova', 'بلینڈر National', 'کیٹل Electric', 'ٹوسٹر Anex',
+        'کیمرہ Canon DSLR', 'پرنٹر HP LaserJet', 'اسپیکر JBL', 'ہیڈفون Sony'
+    ];
+
+    const brands = [
+        'Samsung', 'HP', 'Haier', 'LG', 'Dawlance', 'Honda', 'Super Asia', 'Panasonic',
+        'Pak Electric', 'GFC', 'Phillips', 'Nova', 'National', 'Anex', 'Canon', 'JBL', 'Sony'
+    ];
+
+    const agents = [
+        'احمد علی', 'فرحان خان', 'نوید احمد', 'طاہر حسین', 'عارف محمود',
+        'سلیم شاہ', 'کریم بخش', 'رشید احمد', 'ناصر علی', 'منیر خان'
+    ];
+
+    const paymentMethods = ['نقد', 'بینک ٹرانسفر', 'چیک', 'آن لائن'];
+    const statuses = ['ادھار', 'ادا شدہ', 'جزوی ادائیگی'];
+
+    const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const getRandomDate = (daysBack) => {
+        const date = new Date();
+        date.setDate(date.getDate() - Math.floor(Math.random() * daysBack));
+        return date.toISOString().split('T')[0];
+    };
+
+    const generateReceiptNumber = (index) => {
+        const date = new Date();
+        const year = date.getFullYear().toString().slice(-2);
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const serial = String(1001 + index).padStart(4, '0');
+        return `R${year}${month}${day}${serial}`;
+    };
+
+    console.log('Generating 20 sample receipts...');
+
+    for (let i = 0; i < 20; i++) {
+        const item = getRandomItem(items);
+        const quantity = getRandomNumber(1, 5);
+        const rate = getRandomNumber(5000, 150000);
+        const price = quantity * rate;
+        const discount = Math.random() < 0.3 ? getRandomNumber(500, 5000) : 0;
+        const tax = 17; // Standard GST rate
+        const subtotal = price - discount;
+        const taxAmount = (subtotal * tax) / 100;
+        const finalAmount = subtotal + taxAmount;
+        
+        const status = getRandomItem(statuses);
+        const paidAmount = status === 'ادا شدہ' ? finalAmount : 
+                          status === 'جزوی ادائیگی' ? getRandomNumber(finalAmount * 0.2, finalAmount * 0.8) : 0;
+        const balance = finalAmount - paidAmount;
+        
+        const months = balance > 0 ? getRandomNumber(3, 24) : 1;
+        const monthlyInstallment = balance / months;
+        
+        const receiptDate = getRandomDate(90);
+        const nextPaymentDate = balance > 0 ? 
+            new Date(new Date(receiptDate).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : '';
+
+        const receipt = {
+            receiptNumber: generateReceiptNumber(i),
+            date: receiptDate,
+            time: `${getRandomNumber(9, 18)}:${getRandomNumber(0, 59).toString().padStart(2, '0')}`,
+            customerName: getRandomItem(pakistaniNames),
+            mobile: getRandomItem(mobileNumbers),
+            address: getRandomItem(addresses),
+            cnic: `${getRandomNumber(10000, 99999)}-${getRandomNumber(1000000, 9999999)}-${getRandomNumber(1, 9)}`,
+            item: item,
+            brand: getRandomItem(brands),
+            quantity: quantity,
+            rate: rate,
+            price: price,
+            discount: discount,
+            tax: tax,
+            finalAmount: finalAmount,
+            paidAmount: paidAmount,
+            balance: balance,
+            paymentMethod: getRandomItem(paymentMethods),
+            months: months,
+            monthlyInstallment: monthlyInstallment,
+            nextPaymentDate: nextPaymentDate,
+            warranty: getRandomNumber(6, 36),
+            agent: getRandomItem(agents),
+            status: status,
+            signature: `دستخط: ${getRandomItem(pakistaniNames)}`,
+            notes: Math.random() < 0.4 ? `اضافی نوٹس - ${getRandomItem(['اچھا کسٹمر', 'باقاعدہ ادائیگی', 'خصوصی رعایت', 'تیزی سے ڈیلیوری'])}` : '',
+            timestamp: new Date().toISOString()
+        };
+
+        try {
+            await ar2(receipt);
+            console.log(`Receipt ${i + 1}/20 generated: ${receipt.customerName} - ${receipt.item}`);
+        } catch (error) {
+            console.error(`Error generating receipt ${i + 1}:`, error);
+        }
+    }
+
+    console.log('Sample data generation completed!');
+    
+    // Refresh the data in the UI
+    rs2 = await gr2();
+    updateHeaderStats();
+    dr3();
+    lc2();
+    updateTodaysStats();
+    populateDataLists();
+    
+    console.log('UI updated with new sample data');
+};
+
+// Generate sample business data
+const generateSampleBusiness = async () => {
+    const sampleBusiness = {
+        id: 1,
+        name: 'خان الیکٹرانکس اینڈ اپلائنسز',
+        phone: '042-35123456',
+        email: 'info@khanelectronics.pk',
+        website: 'www.khanelectronics.pk',
+        address: 'شاپ نمبر 15-16، حال روڈ، انارکلی بازار، لاہور',
+        logo: 'https://via.placeholder.com/200x80/2c3e50/ffffff?text=خان+الیکٹرانکس',
+        ntn: '1234567-8',
+        stn: 'STN-LHR-001'
+    };
+
+    try {
+        await sb2(sampleBusiness);
+        bs2 = sampleBusiness;
+        
+        // Update form fields
+        document.getElementById('bn1').value = sampleBusiness.name;
+        document.getElementById('bp1').value = sampleBusiness.phone;
+        document.getElementById('be1').value = sampleBusiness.email;
+        document.getElementById('ba1').value = sampleBusiness.address;
+        document.getElementById('bl1').value = sampleBusiness.logo;
+        document.getElementById('bw1').value = sampleBusiness.website;
+        document.getElementById('ntn1').value = sampleBusiness.ntn;
+        document.getElementById('stn1').value = sampleBusiness.stn;
+        
+        updateHeaderStats();
+        console.log('Sample business data generated successfully!');
+    } catch (error) {
+        console.error('Error generating business data:', error);
+    }
+};
+
+// Generate sample reminders data
+const generateSampleReminders = () => {
+    console.log('Sample reminders generated (reminders are dynamic based on pending receipts)');
+};
+
+// Execute all sample data generation
+const generateAllSampleData = async () => {
+    console.log('Starting complete sample data generation...');
+    
+    await generateSampleBusiness();
+    await generateSampleData();
+    generateSampleReminders();
+    
+    console.log('All sample data generated successfully!');
+    console.log('You can now explore all features of the Receipt Management System');
+    console.log('- Check the Receipts tab for generated receipts');
+    console.log('- Use Search tab to filter data');
+    console.log('- View customer ledgers in Ledger tab');
+    console.log('- Check Reports for analytics');
+    console.log('- See Reminders for pending payments');
+};
+
+// Make functions available globally for console usage uncomment to add this sample data
+
+<!-- window.generateSampleData = generateSampleData; -->
+<!-- window.generateSampleBusiness = generateSampleBusiness; -->
+<!-- window.generateAllSampleData = generateAllSampleData; -->
+
+<!-- console.log('Sample data generators loaded! Use these commands:'); -->
+<!-- console.log('generateSampleData() - Generate 20 sample receipts'); -->
+<!-- console.log('generateSampleBusiness() - Generate sample business info'); -->
+<!-- console.log('generateAllSampleData() - Generate everything'); -->
+<!-- generateAllSampleData(); -->
+
+
+</script>
