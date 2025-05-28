@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پاکستانی رسید سسٹم - Yasin Ullah</title>
+    <meta name="description" content="مکمل آف لائن پاکستانی رسید سسٹم، کھاتہ لیجر، رپورٹس اور یاددہانی کے ساتھ۔">
+    <meta name="keywords" content="پاکستانی رسید، آف لائن رسید، کھاتہ، لیجر، ادھار، ادائیگی، رپورٹس، یاددہانی، IndexedDB، Yasin Ullah">
+    <meta name="author" content="Yasin Ullah">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            direction: rtl;
+            text-align: right;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa; /* Light background */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px; /* Increased max-width */
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
+            border-radius: 8px;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 20px;
+            overflow-x: auto; /* Allow scrolling on small screens */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        }
+        .tab-button {
+            padding: 12px 20px;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            outline: none;
+            font-size: 1rem;
+            flex-shrink: 0; /* Prevent shrinking */
+            text-align: center;
+            transition: color 0.3s ease, border-bottom-color 0.3s ease;
+        }
+        .tab-button:hover {
+             color: #0056b3;
+        }
+        .tab-button.active {
+            border-bottom: 3px solid #007bff;
+            color: #007bff;
+            font-weight: bold;
+        }
+        /* FIX: Hide inactive tab content */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        h2, h3 {
+            color: #007bff;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 10px;
+            margin-top: 25px; /* More space above headings */
+            margin-bottom: 20px;
+        }
+         h2:first-child, h3:first-child {
+             margin-top: 0;
+         }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+            gap: 15px; /* Space between form groups */
+            margin-bottom: 15px;
+        }
+         .form-row .form-group {
+             flex: 1; /* Distribute space */
+             min-width: 200px; /* Minimum width before wrapping */
+             margin-bottom: 0; /* Remove bottom margin from inner groups */
+         }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+         .form-group input:focus,
+         .form-group select:focus,
+         .form-group textarea:focus {
+             border-color: #007bff;
+             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+             outline: none;
+         }
+        .btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-right: 10px;
+            transition: background-color 0.3s ease, opacity 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+         .btn:active {
+             opacity: 0.8;
+         }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+         .btn-secondary:hover {
+             background-color: #5a6268;
+         }
+         .btn-sm {
+             padding: 5px 10px;
+             font-size: 0.9rem;
+             margin-right: 5px;
+         }
+         .btn-group {
+             display: flex;
+             flex-wrap: wrap;
+             gap: 5px;
+         }
+         .btn-group .btn {
+             margin-right: 0; /* Remove margin between grouped buttons */
+         }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Slightly stronger shadow */
+            background-color: #fff;
+        }
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: right;
+        }
+        th {
+            background-color: #e9ecef;
+            font-weight: bold;
+            color: #495057;
+        }
+         tbody tr:nth-child(even) {
+             background-color: #f8f9fa;
+         }
+         tbody tr:hover {
+             background-color: #e2e6ea;
+         }
+        .receipt-preview {
+            border: 2px dashed #000;
+            padding: 30px;
+            margin-top: 30px;
+            background-color: #fff;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .receipt-header, .receipt-footer {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+         .receipt-footer {
+             margin-top: 20px;
+             margin-bottom: 0;
+             padding-top: 10px;
+             border-bottom: none;
+             border-top: 1px dashed #ccc;
+         }
+        .receipt-header h3 {
+            margin: 0 0 5px 0;
+            color: #333;
+        }
+         .receipt-header p, .receipt-footer p {
+             margin: 2px 0;
+             color: #555;
+         }
+        .receipt-details {
+            margin-bottom: 20px;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 15px;
+        }
+        .receipt-details div {
+            margin-bottom: 8px;
+        }
+        .receipt-items table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0;
+            box-shadow: none;
+        }
+        .receipt-items th, .receipt-items td {
+            border: 1px solid #000;
+            padding: 8px;
+        }
+        .receipt-items th {
+            background-color: #eee;
+        }
+        .receipt-signature {
+            margin-top: 30px;
+            text-align: left;
+            padding-top: 10px;
+            border-top: 1px dashed #ccc;
+        }
+        .hidden {
+            display: none;
+        }
+        .search-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: flex-end;
+        }
+        .search-filters .form-group {
+            flex: 1; /* Distribute space */
+            min-width: 180px;
+            margin-bottom: 0;
+        }
+         .search-filters .form-group label {
+             margin-bottom: 8px;
+         }
+        .search-filters button {
+            flex-shrink: 0;
+             height: 42px; /* Match input height */
+        }
+        .khata-entry {
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #fefefe;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .khata-entry div {
+            margin-bottom: 8px;
+        }
+         .khata-entry .actions {
+             margin-top: 10px;
+             text-align: left;
+         }
+        .total-summary {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            background-color: #e9f5ff;
+            font-weight: bold;
+        }
+         .total-summary p {
+             margin: 5px 0;
+         }
+        .report-summary {
+            margin-top: 20px;
+            border: 1px solid #28a745;
+            padding: 15px;
+            border-radius: 4px;
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .report-summary h4 {
+            margin-top: 0;
+            color: #155724;
+        }
+         .reminder-entry {
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #fff3cd;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+             color: #856404;
+        }
+        .reminder-entry div {
+            margin-bottom: 8px;
+        }
+         .reminder-entry .actions {
+             margin-top: 10px;
+             text-align: left;
+         }
+         .reminder-status-sent {
+             color: #28a745;
+             font-weight: bold;
+         }
+         .reminder-status-pending {
+             color: #dc3545;
+             font-weight: bold;
+         }
+        .admin-settings {
+            border: 1px solid #17a2b8;
+            padding: 20px;
+            border-radius: 4px;
+            background-color: #e2f4f7;
+        }
+        .admin-settings .form-group {
+            margin-bottom: 15px;
+        }
+        .admin-settings label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .admin-settings input[type="text"],
+        .admin-settings input[type="email"],
+        .admin-settings textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            margin-bottom: 0; /* Remove margin from inner groups */
+        }
+        .admin-settings input[type="file"] {
+             padding: 5px;
+        }
+        .admin-settings img {
+            max-width: 150px;
+            height: auto;
+            margin-top: 15px;
+            display: block;
+            border: 1px solid #ccc;
+            padding: 5px;
+            background-color: #fff;
+        }
+         .backup-restore {
+             margin-top: 30px;
+             padding-top: 20px;
+             border-top: 1px solid #e9ecef;
+         }
+         .backup-restore p {
+             color: #dc3545;
+             font-weight: bold;
+             margin-top: 15px;
+         }
+
+        /* Responsive Table Styles */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 10px;
+            }
+            .tabs {
+                flex-wrap: nowrap; /* Prevent wrapping */
+            }
+            .tab-button {
+                font-size: 0.9rem;
+                padding: 10px 12px;
+            }
+            .form-row {
+                 flex-direction: column;
+                 gap: 10px;
+            }
+             .form-row .form-group {
+                 min-width: auto;
+                 width: 100%;
+             }
+            .search-filters {
+                flex-direction: column;
+                gap: 10px;
+            }
+             .search-filters .form-group {
+                 min-width: auto;
+                 width: 100%;
+             }
+             .search-filters button {
+                 width: 100%;
+             }
+             .btn {
+                 width: 100%;
+                 margin-right: 0;
+                 margin-bottom: 10px;
+             }
+             .btn-group {
+                 flex-direction: column;
+                 gap: 10px;
+             }
+              .btn-group .btn {
+                  margin-bottom: 0;
+              }
+
+             table, thead, tbody, th, td, tr {
+                 display: block;
+             }
+             thead tr {
+                 position: absolute;
+                 top: -9999px;
+                 left: -9999px;
+             }
+             tr { border: 1px solid #ccc; margin-bottom: 10px; border-radius: 4px; overflow: hidden;}
+             td {
+                 border: none;
+                 border-bottom: 1px solid #eee;
+                 position: relative;
+                 padding-right: 50%; /* Space for label */
+                 text-align: left;
+             }
+             td:before {
+                 position: absolute;
+                 top: 12px; /* Adjust vertical alignment */
+                 right: 12px; /* Adjust horizontal alignment */
+                 width: 45%;
+                 padding-right: 10px;
+                 white-space: nowrap;
+                 font-weight: bold;
+                 content: attr(data-label);
+                 color: #555;
+             }
+             /* Specific labels for tables */
+             #receipts-table td:nth-of-type(1):before { content: "تاریخ:"; }
+             #receipts-table td:nth-of-type(2):before { content: "کسٹمر کا نام:"; }
+             #receipts-table td:nth-of-type(3):before { content: "آئٹم/ماڈل:"; }
+             #receipts-table td:nth-of-type(4):before { content: "کل رقم:"; }
+             #receipts-table td:nth-of-type(5):before { content: "حالت:"; }
+             #receipts-table td:nth-of-type(6):before { content: "کارروائیاں:"; }
+
+             #search-results-table td:nth-of-type(1):before { content: "تاریخ:"; }
+             #search-results-table td:nth-of-type(2):before { content: "کسٹمر کا نام:"; }
+             #search-results-table td:nth-of-type(3):before { content: "آئٹم/ماڈل:"; }
+             #search-results-table td:nth-of-type(4):before { content: "کل رقم:"; }
+             #search-results-table td:nth-of-type(5):before { content: "حالت:"; }
+             #search-results-table td:nth-of-type(6):before { content: "کارروائیاں:"; }
+
+             #reminders-table td:nth-of-type(1):before { content: "کسٹمر:"; }
+             #reminders-table td:nth-of-type(2):before { content: "موبائل نمبر:"; }
+             #reminders-table td:nth-of-type(3):before { content: "پیغام:"; }
+             #reminders-table td:nth-of-type(4):before { content: "تاریخ:"; }
+             #reminders-table td:nth-of-type(5):before { content: "وقت:"; }
+             #reminders-table td:nth-of-type(6):before { content: "حالت:"; }
+             #reminders-table td:nth-of-type(7):before { content: "کارروائیاں:"; }
+
+             /* Adjust actions column */
+             td:last-child {
+                 text-align: right; /* Align actions to the right */
+                 padding-right: 12px; /* Standard padding */
+                 padding-top: 10px; /* Add some space above buttons */
+             }
+             td:last-child::before {
+                 content: ''; /* Hide label for actions */
+             }
+             td .btn-sm {
+                 margin-bottom: 5px;
+             }
+             .khata-entry .actions {
+                 text-align: right; /* Align khata actions to the right */
+             }
+             .khata-entry .actions .btn-sm {
+                 margin-right: 5px;
+             }
+        }
+
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .receipt-preview, .receipt-preview * {
+                visibility: visible;
+            }
+            .receipt-preview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                border: none;
+                padding: 0;
+                margin: 0;
+                box-shadow: none;
+                background-color: transparent;
+                font-size: 12pt; /* Adjust font size for printing */
+            }
+             .receipt-items table, .receipt-items th, .receipt-items td {
+                 border-color: #000 !important; /* Ensure black borders on print */
+             }
+            .container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+            .tabs, .btn, .form-group, .form-row, table, .search-filters, .khata-entry, .total-summary, .report-summary, .reminder-entry, .admin-settings {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-button active" data-tab="receipts">رسید</button>
+            <button class="tab-button" data-tab="search">تلاش</button>
+            <button class="tab-button" data-tab="khata">کھاتہ</button>
+            <button class="tab-button" data-tab="reports">رپورٹس</button>
+            <button class="tab-button" data-tab="reminders">یاددہانی</button>
+            <button class="tab-button" data-tab="admin">ایڈمن سیٹنگز</button>
+        </div>
+
+        <div id="receipts" class="tab-content active">
+            <h2>نئی رسید / رسید میں ترمیم</h2>
+            <form id="receipt-form">
+                <input type="hidden" id="receipt-id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="receipt-date">تاریخ:</label>
+                        <input type="date" id="receipt-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-name">کسٹمر کا نام:</label>
+                        <input type="text" id="customer-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile-number">موبائل نمبر:</label>
+                        <input type="text" id="mobile-number">
+                    </div>
+                </div>
+                 <div class="form-row">
+                    <div class="form-group">
+                        <label for="item-model">آئٹم/ماڈل:</label>
+                        <input type="text" id="item-model" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">تعداد:</label>
+                        <input type="number" id="quantity" value="1" min="1" required>
+                    </div>
+                     <div class="form-group">
+                        <label for="installment-months">مہینے (اقساط):</label>
+                        <input type="number" id="installment-months" value="0" min="0">
+                    </div>
+                </div>
+                 <div class="form-row">
+                    <div class="form-group">
+                        <label for="total-price">کل رقم:</label>
+                        <input type="number" id="total-price" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment-status">ادائیگی کی حالت:</label>
+                        <select id="payment-status" required>
+                            <option value="ادھار">ادھار</option>
+                            <option value="ادا شدہ">ادا شدہ</option>
+                        </select>
+                    </div>
+                     <div class="form-group">
+                        <label for="signature">دستخط / منظوری:</label>
+                        <input type="text" id="signature">
+                    </div>
+                 </div>
+                <button type="submit" class="btn">محفوظ کریں</button>
+                <button type="button" class="btn btn-secondary" id="cancel-edit" style="display: none;">منسوخ کریں</button>
+            </form>
+
+            <h2>تمام رسیدیں</h2>
+            <table id="receipts-table">
+                <thead>
+                    <tr>
+                        <th>تاریخ</th>
+                        <th>کسٹمر کا نام</th>
+                        <th>آئٹم/ماڈل</th>
+                        <th>کل رقم</th>
+                        <th>حالت</th>
+                        <th>کارروائیاں</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Receipts will be loaded here -->
+                </tbody>
+            </table>
+
+             <div class="receipt-preview hidden">
+                <div class="receipt-header">
+                    <img id="receipt-logo-preview" src="" alt="Business Logo" style="display: none;">
+                    <h3 id="receipt-business-name-preview"></h3>
+                    <p id="receipt-business-address-preview"></p>
+                    <p id="receipt-business-phone-preview"></p>
+                    <p id="receipt-business-email-preview"></p>
+                </div>
+                <div class="receipt-details">
+                    <div><strong>رسید نمبر:</strong> <span id="print-receipt-id"></span></div>
+                    <div><strong>تاریخ:</strong> <span id="print-date"></span></div>
+                    <div><strong>کسٹمر کا نام:</strong> <span id="print-customer-name"></span></div>
+                    <div><strong>موبائل نمبر:</strong> <span id="print-mobile-number"></span></div>
+                </div>
+                <div class="receipt-items">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>آئٹم/ماڈل</th>
+                                <th>تعداد</th>
+                                <th>مہینے</th>
+                                <th>کل رقم</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="print-item-model"></td>
+                                <td id="print-quantity"></td>
+                                <td id="print-installment-months"></td>
+                                <td id="print-total-price"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                 <div class="receipt-details" style="margin-top: 15px;">
+                     <div><strong>ادائیگی کی حالت:</strong> <span id="print-payment-status"></span></div>
+                 </div>
+                <div class="receipt-signature">
+                    <strong>دستخط / منظوری:</strong> <span id="print-signature"></span>
+                </div>
+                 <div class="receipt-footer">
+                     <p id="receipt-business-name-footer"></p>
+                     <p id="receipt-business-phone-footer"></p>
+                 </div>
+            </div>
+        </div>
+
+        <div id="search" class="tab-content">
+            <h2>تلاش</h2>
+            <div class="search-filters">
+                 <div class="form-group">
+                     <label for="search-query">تلاش کریں:</label>
+                    <input type="text" id="search-query" placeholder="نام، آئٹم، موبائل نمبر...">
+                 </div>
+                 <div class="form-group">
+                     <label for="search-date">تاریخ:</label>
+                    <input type="date" id="search-date">
+                 </div>
+                 <div class="form-group">
+                     <label for="search-status">حالت:</label>
+                    <select id="search-status">
+                        <option value="">تمام حالتیں</option>
+                        <option value="ادھار">ادھار</option>
+                        <option value="ادا شدہ">ادا شدہ</option>
+                    </select>
+                 </div>
+                <button class="btn" id="apply-search">تلاش کریں</button>
+            </div>
+            <table id="search-results-table">
+                 <thead>
+                    <tr>
+                        <th>تاریخ</th>
+                        <th>کسٹمر کا نام</th>
+                        <th>آئٹم/ماڈل</th>
+                        <th>کل رقم</th>
+                        <th>حالت</th>
+                        <th>کارروائیاں</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Search results will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="khata" class="tab-content">
+            <h2>کھاتہ لیجر</h2>
+            <div class="form-group">
+                 <label for="khata-customer-filter">کسٹمر منتخب کریں:</label>
+                 <select id="khata-customer-filter">
+                     <option value="">تمام کسٹمرز</option>
+                     <!-- Customer names will be loaded here -->
+                 </select>
+            </div>
+            <div id="khata-ledger-entries">
+                <!-- Khata entries will be loaded here -->
+            </div>
+            <div id="khata-total-summary" class="total-summary">
+                <!-- Total summary will be loaded here -->
+            </div>
+        </div>
+
+        <div id="reports" class="tab-content">
+            <h2>رپورٹس</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="report-period">رپورٹ کی مدت:</label>
+                    <select id="report-period">
+                        <option value="daily">روزانہ</option>
+                        <option value="weekly">ہفتہ وار</option>
+                        <option value="monthly">ماہانہ</option>
+                        <option value="all">تمام</option>
+                    </select>
+                </div>
+                 <div class="form-group">
+                    <label for="report-date">تاریخ منتخب کریں:</label>
+                    <input type="date" id="report-date">
+                </div>
+                <div class="form-group" style="flex-grow: 0;">
+                     <button class="btn" id="generate-report" style="height: 42px;">رپورٹ بنائیں</button>
+                </div>
+            </div>
+
+            <div id="report-summary" class="report-summary hidden">
+                <h4>رپورٹ کا خلاصہ</h4>
+                <p><strong>کل فروخت:</strong> <span id="report-total-sales"></span></p>
+                <p><strong>کل ادھار:</strong> <span id="report-total-udhar"></span></p>
+                <p><strong>کل ادا شدہ:</strong> <span id="report-total-paid"></span></p>
+            </div>
+
+             <table id="report-details-table" class="hidden">
+                 <thead>
+                    <tr>
+                        <th>تاریخ</th>
+                        <th>کسٹمر کا نام</th>
+                        <th>آئٹم/ماڈل</th>
+                        <th>کل رقم</th>
+                        <th>حالت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Report details will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="reminders" class="tab-content">
+            <h2>یاددہانی</h2>
+             <div class="form-row">
+                 <div class="form-group">
+                    <label for="reminder-customer">کسٹمر منتخب کریں:</label>
+                     <select id="reminder-customer">
+                         <option value="">کسٹمر منتخب کریں</option>
+                         <!-- Customer names will be loaded here -->
+                     </select>
+                </div>
+                 <div class="form-group">
+                    <label for="reminder-mobile">موبائل نمبر:</label>
+                    <input type="text" id="reminder-mobile" readonly placeholder="کسٹمر منتخب کرنے پر خود بخود آئے گا">
+                </div>
+             </div>
+             <div class="form-group">
+                <label for="reminder-message">پیغام:</label>
+                <textarea id="reminder-message" rows="4" required>آپ کی ادائیگی واجب الادا ہے۔</textarea>
+            </div>
+             <div class="form-row">
+                 <div class="form-group">
+                    <label for="reminder-date">تاریخ (اختیاری):</label>
+                    <input type="date" id="reminder-date">
+                </div>
+                 <div class="form-group">
+                    <label for="reminder-time">وقت (اختیاری):</label>
+                    <input type="time" id="reminder-time">
+                </div>
+             </div>
+            <button class="btn" id="add-reminder">یاددہانی شامل کریں</button>
+
+            <h3>تمام یاددہانی</h3>
+             <table id="reminders-table">
+                 <thead>
+                    <tr>
+                        <th>کسٹمر</th>
+                        <th>موبائل نمبر</th>
+                        <th>پیغام</th>
+                        <th>تاریخ</th>
+                        <th>وقت</th>
+                        <th>حالت</th>
+                        <th>کارروائیاں</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Reminders will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="admin" class="tab-content">
+            <h2>ایڈمن سیٹنگز</h2>
+            <div class="admin-settings">
+                <div class="form-group">
+                    <label for="business-name">کاروبار کا نام:</label>
+                    <input type="text" id="business-name">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="business-phone">فون نمبر:</label>
+                        <input type="text" id="business-phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="business-email">ای میل:</label>
+                        <input type="email" id="business-email">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="business-address">پتہ:</label>
+                    <textarea id="business-address" rows="3"></textarea>
+                </div>
+                 <div class="form-group">
+                    <label for="business-logo">لوگو (تصویر اپ لوڈ کریں):</label>
+                    <input type="file" id="business-logo" accept="image/*">
+                     <img id="business-logo-preview" src="" alt="Business Logo" style="display: none;">
+                </div>
+                <button class="btn" id="save-admin-settings">محفوظ کریں</button>
+            </div>
+
+            <div class="backup-restore">
+                <h3>ڈیٹا بیک اپ اور بحالی</h3>
+                <button class="btn" id="export-data">ڈیٹا ایکسپورٹ کریں (JSON)</button>
+                <input type="file" id="import-data" accept=".json" style="display: none;">
+                <button class="btn" id="import-data-button">ڈیٹا امپورٹ کریں (JSON)</button>
+                 <p>احتیاط: ڈیٹا امپورٹ کرنے سے موجودہ ڈیٹا ختم ہو جائے گا۔</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const DB_NAME = 'PakistaniReceiptDB';
+        const DB_VERSION = 1; // Increment version if schema changes
+        let db;
+
+        const TABS = ['receipts', 'search', 'khata', 'reports', 'reminders', 'admin'];
+
+        // IndexedDB Initialization
+        function openDatabase() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+                request.onupgradeneeded = (event) => {
+                    db = event.target.result;
+                    if (!db.objectStoreNames.contains('receipts')) {
+                        db.createObjectStore('receipts', { keyPath: 'id', autoIncrement: true });
+                    }
+                    if (!db.objectStoreNames.contains('settings')) {
+                        db.createObjectStore('settings', { keyPath: 'key' });
+                    }
+                     if (!db.objectStoreNames.contains('reminders')) {
+                        db.createObjectStore('reminders', { keyPath: 'id', autoIncrement: true });
+                    }
+                };
+
+                request.onsuccess = (event) => {
+                    db = event.target.result;
+                    console.log('Database opened successfully');
+                    resolve(db);
+                };
+
+                request.onerror = (event) => {
+                    console.error('Database error:', event.target.errorCode);
+                    alert('ڈیٹا بیس کھولنے میں خرابی پیش آئی: ' + event.target.errorCode);
+                    reject(event.target.errorCode);
+                };
+            });
+        }
+
+        // Generic function to add data
+        function addData(storeName, data) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([storeName], 'readwrite');
+                const store = transaction.objectStore(storeName);
+                const request = store.add(data);
+
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = (event) => {
+                     console.error(`Error adding data to ${storeName}:`, event.target.error);
+                     reject(event.target.error);
+                };
+            });
+        }
+
+         // Generic function to get data by key
+        function getData(storeName, key) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([storeName], 'readonly');
+                const store = transaction.objectStore(storeName);
+                const request = store.get(key);
+
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = (event) => {
+                     console.error(`Error getting data from ${storeName}:`, event.target.error);
+                     reject(event.target.error);
+                };
+            });
+        }
+
+        // Generic function to update data
+        function updateData(storeName, data) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([storeName], 'readwrite');
+                const store = transaction.objectStore(storeName);
+                const request = store.put(data);
+
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = (event) => {
+                     console.error(`Error updating data in ${storeName}:`, event.target.error);
+                     reject(event.target.error);
+                };
+            });
+        }
+
+        // Generic function to delete data
+        function deleteData(storeName, key) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([storeName], 'readwrite');
+                const store = transaction.objectStore(storeName);
+                const request = store.delete(key);
+
+                request.onsuccess = () => resolve();
+                request.onerror = (event) => {
+                     console.error(`Error deleting data from ${storeName}:`, event.target.error);
+                     reject(event.target.error);
+                };
+            });
+        }
+
+        // Generic function to get all data
+        function getAllData(storeName) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([storeName], 'readonly');
+                const store = transaction.objectStore(storeName);
+                const request = store.getAll();
+
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = (event) => {
+                     console.error(`Error getting all data from ${storeName}:`, event.target.error);
+                     reject(event.target.error);
+                };
+            });
+        }
+
+        // --- Tab Handling ---
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.querySelector(`.tab-button[data-tab="${tabId}"]`).classList.add('active');
+
+            // Load data specific to the opened tab
+            if (tabId === 'receipts') {
+                loadReceipts();
+            } else if (tabId === 'search') {
+                loadSearchResults([]); // Clear previous search results
+            } else if (tabId === 'khata') {
+                loadKhataCustomers();
+                loadKhataLedger(); // Load for all initially
+            } else if (tabId === 'reports') {
+                 document.getElementById('report-summary').classList.add('hidden');
+                 document.getElementById('report-details-table').classList.add('hidden');
+                 // Set default date for daily report if not set
+                 if (!reportDateInput.value) {
+                      reportDateInput.valueAsDate = new Date();
+                 }
+            } else if (tabId === 'reminders') {
+                 loadReminderCustomers();
+                 loadReminders();
+                 document.getElementById('reminder-mobile').value = ''; // Clear mobile field
+            } else if (tabId === 'admin') {
+                loadAdminSettings();
+            }
+        }
+
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                openTab(button.dataset.tab);
+            });
+        });
+
+        // --- Receipts Tab ---
+        const receiptForm = document.getElementById('receipt-form');
+        const receiptsTableBody = document.querySelector('#receipts-table tbody');
+        const receiptIdInput = document.getElementById('receipt-id');
+        const cancelEditButton = document.getElementById('cancel-edit');
+
+        async function loadReceipts() {
+            try {
+                const receipts = await getAllData('receipts');
+                displayReceipts(receipts);
+            } catch (error) {
+                console.error('Error loading receipts:', error);
+                alert('رسیدیں لوڈ کرنے میں خرابی پیش آئی۔');
+            }
+        }
+
+        function displayReceipts(receipts) {
+            receiptsTableBody.innerHTML = '';
+            if (receipts.length === 0) {
+                 receiptsTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">کوئی رسید نہیں ملی۔</td></tr>';
+                 return;
+            }
+            receipts.forEach(receipt => {
+                const row = receiptsTableBody.insertRow();
+                row.innerHTML = `
+                    <td data-label="تاریخ:">${receipt.date}</td>
+                    <td data-label="کسٹمر کا نام:">${receipt.customerName}</td>
+                    <td data-label="آئٹم/ماڈل:">${receipt.itemModel}</td>
+                    <td data-label="کل رقم:">${receipt.totalPrice}</td>
+                    <td data-label="حالت:">${receipt.paymentStatus}</td>
+                    <td data-label="کارروائیاں:">
+                        <div class="btn-group">
+                            <button class="btn btn-secondary btn-sm" onclick="editReceipt(${receipt.id})">ترمیم</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteReceipt(${receipt.id})">حذف کریں</button>
+                             <button class="btn btn-sm" onclick="printReceipt(${receipt.id})">پرنٹ</button>
+                        </div>
+                    </td>
+                `;
+            });
+        }
+
+        receiptForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+             // Basic validation
+             if (!document.getElementById('receipt-date').value ||
+                 !document.getElementById('customer-name').value.trim() ||
+                 !document.getElementById('item-model').value.trim() ||
+                 !document.getElementById('quantity').value ||
+                 !document.getElementById('total-price').value) {
+                 alert('براہ کرم تمام ضروری فیلڈز پُر کریں۔');
+                 return;
+             }
+
+            const receipt = {
+                date: document.getElementById('receipt-date').value,
+                customerName: document.getElementById('customer-name').value.trim(),
+                mobileNumber: document.getElementById('mobile-number').value.trim(),
+                itemModel: document.getElementById('item-model').value.trim(),
+                quantity: parseInt(document.getElementById('quantity').value),
+                 installmentMonths: parseInt(document.getElementById('installment-months').value) || 0,
+                totalPrice: parseFloat(document.getElementById('total-price').value),
+                paymentStatus: document.getElementById('payment-status').value,
+                 signature: document.getElementById('signature').value.trim(),
+                timestamp: Date.now() // For sorting in Khata
+            };
+
+            const receiptId = receiptIdInput.value;
+
+            try {
+                if (receiptId) {
+                    receipt.id = parseInt(receiptId);
+                    await updateData('receipts', receipt);
+                    alert('رسید کامیابی سے اپ ڈیٹ ہو گئی!');
+                } else {
+                    await addData('receipts', receipt);
+                    alert('رسید کامیابی سے محفوظ ہو گئی!');
+                }
+                receiptForm.reset();
+                receiptIdInput.value = '';
+                cancelEditButton.style.display = 'none';
+                loadReceipts(); // Reload the list
+            } catch (error) {
+                console.error('Error saving receipt:', error);
+                alert('رسید محفوظ کرنے میں خرابی پیش آئی۔');
+            }
+        });
+
+        async function editReceipt(id) {
+            try {
+                const receipt = await getData('receipts', id);
+                if (receipt) {
+                    document.getElementById('receipt-id').value = receipt.id;
+                    document.getElementById('receipt-date').value = receipt.date;
+                    document.getElementById('customer-name').value = receipt.customerName;
+                    document.getElementById('mobile-number').value = receipt.mobileNumber;
+                    document.getElementById('item-model').value = receipt.itemModel;
+                    document.getElementById('quantity').value = receipt.quantity;
+                     document.getElementById('installment-months').value = receipt.installmentMonths;
+                    document.getElementById('total-price').value = receipt.totalPrice;
+                    document.getElementById('payment-status').value = receipt.paymentStatus;
+                     document.getElementById('signature').value = receipt.signature;
+                    cancelEditButton.style.display = 'inline-block';
+                     // Scroll to the top of the form
+                     receiptForm.scrollIntoView({ behavior: 'smooth' });
+                     alert('رسید ترمیم کے لیے لوڈ ہو گئی ہے۔');
+                } else {
+                    alert('رسید نہیں ملی۔');
+                }
+            } catch (error) {
+                 console.error('Error loading receipt for edit:', error);
+                 alert('رسید لوڈ کرنے میں خرابی پیش آئی۔');
+            }
+        }
+
+        cancelEditButton.addEventListener('click', () => {
+            receiptForm.reset();
+            receiptIdInput.value = '';
+            cancelEditButton.style.display = 'none';
+        });
+
+        async function deleteReceipt(id) {
+            if (confirm('کیا آپ واقعی اس رسید کو حذف کرنا چاہتے ہیں؟ یہ عمل ناقابل واپسی ہے۔')) {
+                try {
+                    await deleteData('receipts', id);
+                    alert('رسید کامیابی سے حذف ہو گئی!');
+                    // Reload the current view (Receipts, Search, or Khata)
+                    const activeTab = document.querySelector('.tab-button.active').dataset.tab;
+                    if (activeTab === 'receipts') {
+                         loadReceipts();
+                    } else if (activeTab === 'search') {
+                         applySearchButton.click(); // Re-run search
+                    } else if (activeTab === 'khata') {
+                         loadKhataLedger(khataCustomerFilter.value); // Reload khata
+                    }
+                } catch (error) {
+                    console.error('Error deleting receipt:', error);
+                    alert('رسید حذف کرنے میں خرابی پیش آئی۔');
+                }
+            }
+        }
+
+        async function printReceipt(id) {
+            try {
+                const receipt = await getData('receipts', id);
+                 const settings = await getData('settings', 'businessInfo') || {};
+
+                if (receipt) {
+                    document.getElementById('print-receipt-id').textContent = receipt.id;
+                    document.getElementById('receipt-business-name-preview').textContent = settings.businessName || '';
+                    document.getElementById('receipt-business-address-preview').textContent = settings.businessAddress || '';
+                    document.getElementById('receipt-business-phone-preview').textContent = settings.businessPhone || '';
+                     document.getElementById('receipt-business-email-preview').textContent = settings.businessEmail || '';
+                     const logoPreview = document.getElementById('receipt-logo-preview');
+                     if (settings.businessLogo) {
+                         logoPreview.src = settings.businessLogo;
+                         logoPreview.style.display = 'block';
+                     } else {
+                         logoPreview.style.display = 'none';
+                     }
+
+                     // Footer info (can be same or different)
+                     document.getElementById('receipt-business-name-footer').textContent = settings.businessName || '';
+                     document.getElementById('receipt-business-phone-footer').textContent = settings.businessPhone || '';
+
+
+                    document.getElementById('print-date').textContent = receipt.date;
+                    document.getElementById('print-customer-name').textContent = receipt.customerName;
+                    document.getElementById('print-mobile-number').textContent = receipt.mobileNumber || 'N/A';
+                    document.getElementById('print-item-model').textContent = receipt.itemModel;
+                    document.getElementById('print-quantity').textContent = receipt.quantity;
+                     document.getElementById('print-installment-months').textContent = receipt.installmentMonths;
+                    document.getElementById('print-total-price').textContent = receipt.totalPrice;
+                    document.getElementById('print-payment-status').textContent = receipt.paymentStatus;
+                     document.getElementById('print-signature').textContent = receipt.signature || 'N/A';
+
+                    document.querySelector('.receipt-preview').classList.remove('hidden');
+                    window.print();
+                    document.querySelector('.receipt-preview').classList.add('hidden');
+                } else {
+                    alert('رسید پرنٹ کے لیے نہیں ملی۔');
+                }
+            } catch (error) {
+                 console.error('Error preparing receipt for print:', error);
+                 alert('رسید پرنٹ کرنے میں خرابی پیش آئی۔');
+            }
+        }
+
+
+        // --- Search Tab ---
+        const searchInput = document.getElementById('search-query');
+        const searchDateInput = document.getElementById('search-date');
+        const searchStatusSelect = document.getElementById('search-status');
+        const applySearchButton = document.getElementById('apply-search');
+        const searchResultsTableBody = document.querySelector('#search-results-table tbody');
+
+        applySearchButton.addEventListener('click', async () => {
+            const query = searchInput.value.toLowerCase().trim();
+            const date = searchDateInput.value;
+            const status = searchStatusSelect.value;
+
+            try {
+                const allReceipts = await getAllData('receipts');
+
+                const filteredReceipts = allReceipts.filter(receipt => {
+                    const matchesQuery = query === '' ||
+                                         (receipt.customerName && receipt.customerName.toLowerCase().includes(query)) ||
+                                         (receipt.itemModel && receipt.itemModel.toLowerCase().includes(query)) ||
+                                         (receipt.mobileNumber && receipt.mobileNumber.includes(query));
+                    const matchesDate = date === '' || receipt.date === date;
+                    const matchesStatus = status === '' || receipt.paymentStatus === status;
+
+                    return matchesQuery && matchesDate && matchesStatus;
+                });
+
+                loadSearchResults(filteredReceipts);
+            } catch (error) {
+                 console.error('Error during search:', error);
+                 alert('تلاش میں خرابی پیش آئی۔');
+            }
+        });
+
+        function loadSearchResults(results) {
+             searchResultsTableBody.innerHTML = '';
+             if (results.length === 0) {
+                 searchResultsTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">کوئی نتیجہ نہیں ملا۔</td></tr>';
+                 return;
+             }
+            results.forEach(receipt => {
+                const row = searchResultsTableBody.insertRow();
+                 row.innerHTML = `
+                    <td data-label="تاریخ:">${receipt.date}</td>
+                    <td data-label="کسٹمر کا نام:">${receipt.customerName}</td>
+                    <td data-label="آئٹم/ماڈل:">${receipt.itemModel}</td>
+                    <td data-label="کل رقم:">${receipt.totalPrice}</td>
+                    <td data-label="حالت:">${receipt.paymentStatus}</td>
+                    <td data-label="کارروائیاں:">
+                         <div class="btn-group">
+                            <button class="btn btn-secondary btn-sm" onclick="editReceipt(${receipt.id}); openTab('receipts');">ترمیم</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteReceipt(${receipt.id});">حذف کریں</button>
+                            <button class="btn btn-sm" onclick="printReceipt(${receipt.id})">پرنٹ</button>
+                         </div>
+                    </td>
+                `;
+            });
+        }
+
+
+        // --- Khata Ledger Tab ---
+        const khataCustomerFilter = document.getElementById('khata-customer-filter');
+        const khataLedgerEntriesDiv = document.getElementById('khata-ledger-entries');
+        const khataTotalSummaryDiv = document.getElementById('khata-total-summary');
+
+        async function loadKhataCustomers() {
+            try {
+                const receipts = await getAllData('receipts');
+                const customerNames = [...new Set(receipts.map(r => r.customerName).filter(name => name && name.trim() !== ''))].sort(); // Filter out empty names
+
+                khataCustomerFilter.innerHTML = '<option value="">تمام کسٹمرز</option>';
+                customerNames.forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    khataCustomerFilter.appendChild(option);
+                });
+            } catch (error) {
+                 console.error('Error loading khata customers:', error);
+                 alert('کسٹمرز لوڈ کرنے میں خرابی پیش آئی۔');
+            }
+        }
+
+        khataCustomerFilter.addEventListener('change', () => {
+            loadKhataLedger(khataCustomerFilter.value);
+        });
+
+        async function loadKhataLedger(customerName = null) {
+            try {
+                const allReceipts = await getAllData('receipts');
+                let filteredReceipts = allReceipts;
+
+                if (customerName && customerName.trim() !== '') {
+                    filteredReceipts = allReceipts.filter(r => r.customerName === customerName);
+                }
+
+                // Sort by timestamp to show chronological order
+                filteredReceipts.sort((a, b) => a.timestamp - b.timestamp);
+
+                khataLedgerEntriesDiv.innerHTML = '';
+                let totalUdhar = 0;
+                let totalPaid = 0;
+
+                if (filteredReceipts.length === 0) {
+                     khataLedgerEntriesDiv.innerHTML = '<p style="text-align:center;">کوئی اندراج نہیں ملا۔</p>';
+                     khataTotalSummaryDiv.textContent = '';
+                     return;
+                }
+
+
+                filteredReceipts.forEach(receipt => {
+                    const entryDiv = document.createElement('div');
+                    entryDiv.classList.add('khata-entry');
+                    entryDiv.innerHTML = `
+                        <div><strong>تاریخ:</strong> ${receipt.date}</div>
+                        <div><strong>کسٹمر:</strong> ${receipt.customerName}</div>
+                        <div><strong>آئٹم:</strong> ${receipt.itemModel}</div>
+                        <div><strong>رقم:</strong> ${receipt.totalPrice}</div>
+                        <div><strong>حالت:</strong> ${receipt.paymentStatus}</div>
+                        <div class="actions btn-group">
+                             <button class="btn btn-secondary btn-sm" onclick="editReceipt(${receipt.id}); openTab('receipts');">ترمیم</button>
+                             <button class="btn btn-danger btn-sm" onclick="deleteReceipt(${receipt.id});">حذف کریں</button>
+                             <button class="btn btn-sm" onclick="printReceipt(${receipt.id})">پرنٹ</button>
+                        </div>
+                    `;
+                     khataLedgerEntriesDiv.appendChild(entryDiv);
+
+                    if (receipt.paymentStatus === 'ادھار') {
+                        totalUdhar += receipt.totalPrice;
+                    } else {
+                        totalPaid += receipt.totalPrice;
+                    }
+                });
+
+                 khataTotalSummaryDiv.innerHTML = `
+                     <p><strong>کل ادھار:</strong> ${totalUdhar.toFixed(2)}</p>
+                     <p><strong>کل ادا شدہ:</strong> ${totalPaid.toFixed(2)}</p>
+                     <p><strong>بقایا ادھار:</strong> ${(totalUdhar - totalPaid).toFixed(2)}</p>
+                `;
+            } catch (error) {
+                 console.error('Error loading khata ledger:', error);
+                 alert('کھاتہ لیجر لوڈ کرنے میں خرابی پیش آئی۔');
+            }
+        }
+
+
+        // --- Reports Tab ---
+        const reportPeriodSelect = document.getElementById('report-period');
+        const reportDateInput = document.getElementById('report-date');
+        const generateReportButton = document.getElementById('generate-report');
+        const reportSummaryDiv = document.getElementById('report-summary');
+        const reportTotalSalesSpan = document.getElementById('report-total-sales');
+        const reportTotalUdharSpan = document.getElementById('report-total-udhar');
+        const reportTotalPaidSpan = document.getElementById('report-total-paid');
+        const reportDetailsTableBody = document.querySelector('#report-details-table tbody');
+        const reportDetailsTable = document.getElementById('report-details-table');
+
+
+        generateReportButton.addEventListener('click', async () => {
+            const period = reportPeriodSelect.value;
+            const date = reportDateInput.value;
+
+            if (!date && period !== 'all') {
+                alert('رپورٹ کے لیے تاریخ منتخب کریں۔');
+                return;
+            }
+
+            try {
+                const allReceipts = await getAllData('receipts');
+                let filteredReceipts = [];
+
+                const selectedDate = date ? new Date(date) : null;
+                if (selectedDate) selectedDate.setHours(0, 0, 0, 0);
+
+
+                if (period === 'daily' && selectedDate) {
+                    filteredReceipts = allReceipts.filter(receipt => {
+                        const receiptDate = new Date(receipt.date);
+                        receiptDate.setHours(0, 0, 0, 0);
+                        return receiptDate.getTime() === selectedDate.getTime();
+                    });
+                } else if (period === 'weekly' && selectedDate) {
+                     const startOfWeek = new Date(selectedDate);
+                     startOfWeek.setDate(selectedDate.getDate() - selectedDate.getDay()); // Sunday
+                     const endOfWeek = new Date(startOfWeek);
+                     endOfWeek.setDate(startOfWeek.getDate() + 6); // Saturday
+                     endOfWeek.setHours(23, 59, 59, 999); // Include the whole day
+
+                     filteredReceipts = allReceipts.filter(receipt => {
+                        const receiptDate = new Date(receipt.date);
+                        receiptDate.setHours(0, 0, 0, 0); // Compare dates only
+                        return receiptDate >= startOfWeek && receiptDate <= endOfWeek;
+                     });
+
+                } else if (period === 'monthly' && selectedDate) {
+                     const startOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+                     const endOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0); // Last day of the month
+                     endOfMonth.setHours(23, 59, 59, 999); // Include the whole day
+
+
+                     filteredReceipts = allReceipts.filter(receipt => {
+                        const receiptDate = new Date(receipt.date);
+                         receiptDate.setHours(0, 0, 0, 0); // Compare dates only
+                        return receiptDate >= startOfMonth && receiptDate <= endOfMonth;
+                     });
+                } else if (period === 'all') {
+                     filteredReceipts = allReceipts;
+                }
+
+                displayReport(filteredReceipts);
+            } catch (error) {
+                 console.error('Error generating report:', error);
+                 alert('رپورٹ بنانے میں خرابی پیش آئی۔');
+            }
+        });
+
+        function displayReport(receipts) {
+            let totalSales = 0;
+            let totalUdhar = 0;
+            let totalPaid = 0;
+
+            reportDetailsTableBody.innerHTML = '';
+
+            if (receipts.length === 0) {
+                 reportDetailsTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">کوئی ڈیٹا دستیاب نہیں ہے۔</td></tr>';
+                 reportSummaryDiv.classList.remove('hidden');
+                 reportDetailsTable.classList.remove('hidden');
+                 reportTotalSalesSpan.textContent = 0;
+                 reportTotalUdharSpan.textContent = 0;
+                 reportTotalPaidSpan.textContent = 0;
+                 return;
+            }
+
+
+            receipts.forEach(receipt => {
+                totalSales += receipt.totalPrice;
+                if (receipt.paymentStatus === 'ادھار') {
+                    totalUdhar += receipt.totalPrice;
+                } else {
+                    totalPaid += receipt.totalPrice;
+                }
+
+                 const row = reportDetailsTableBody.insertRow();
+                 row.innerHTML = `
+                    <td>${receipt.date}</td>
+                    <td>${receipt.customerName}</td>
+                    <td>${receipt.itemModel}</td>
+                    <td>${receipt.totalPrice}</td>
+                    <td>${receipt.paymentStatus}</td>
+                `;
+            });
+
+            reportTotalSalesSpan.textContent = totalSales.toFixed(2);
+            reportTotalUdharSpan.textContent = totalUdhar.toFixed(2);
+            reportTotalPaidSpan.textContent = totalPaid.toFixed(2);
+
+            reportSummaryDiv.classList.remove('hidden');
+             reportDetailsTable.classList.remove('hidden');
+        }
+
+
+        // --- Reminders Tab ---
+        const reminderCustomerSelect = document.getElementById('reminder-customer');
+        const reminderMobileInput = document.getElementById('reminder-mobile');
+        const reminderMessageTextarea = document.getElementById('reminder-message');
+        const reminderDateInput = document.getElementById('reminder-date');
+        const reminderTimeInput = document.getElementById('reminder-time');
+        const addReminderButton = document.getElementById('add-reminder');
+        const remindersTableBody = document.querySelector('#reminders-table tbody');
+
+         async function loadReminderCustomers() {
+            try {
+                const receipts = await getAllData('receipts');
+                const customerNames = [...new Set(receipts.map(r => r.customerName).filter(name => name && name.trim() !== ''))].sort(); // Filter out empty names
+
+                reminderCustomerSelect.innerHTML = '<option value="">کسٹمر منتخب کریں</option>';
+                customerNames.forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    reminderCustomerSelect.appendChild(option);
+                });
+
+            } catch (error) {
+                 console.error('Error loading reminder customers:', error);
+                 alert('یاددہانی کے لیے کسٹمرز لوڈ کرنے میں خرابی پیش آئی۔');
+            }
+        }
+
+        reminderCustomerSelect.addEventListener('change', async (event) => {
+            const selectedCustomerName = event.target.value;
+            reminderMobileInput.value = ''; // Clear previous mobile number
+
+            if (selectedCustomerName) {
+                try {
+                     const allReceipts = await getAllData('receipts');
+                    const customerReceipts = allReceipts.filter(r => r.customerName === selectedCustomerName && r.mobileNumber && r.mobileNumber.trim() !== '');
+                    if (customerReceipts.length > 0) {
+                        // Use the mobile number from the latest receipt for that customer
+                        const latestReceipt = customerReceipts.sort((a, b) => b.timestamp - a.timestamp)[0];
+                        reminderMobileInput.value = latestReceipt.mobileNumber;
+                    }
+                } catch (error) {
+                     console.error('Error fetching mobile number for reminder:', error);
+                }
+            }
+        });
+
+
+        async function loadReminders() {
+            try {
+                const reminders = await getAllData('reminders');
+                displayReminders(reminders);
+            } catch (error) {
+                 console.error('Error loading reminders:', error);
+                 alert('یاددہانی لوڈ کرنے میں خرابی پیش آئی۔');
+            }
+        }
+
+        function displayReminders(reminders) {
+            remindersTableBody.innerHTML = '';
+             if (reminders.length === 0) {
+                 remindersTableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">کوئی یاددہانی شامل نہیں کی گئی۔</td></tr>';
+                 return;
+             }
+            reminders.forEach(reminder => {
+                 const statusClass = reminder.status === 'ادا شدہ' ? 'reminder-status-sent' : 'reminder-status-pending';
+                const row = remindersTableBody.insertRow();
+                 row.innerHTML = `
+                    <td data-label="کسٹمر:">${reminder.customerName}</td>
+                    <td data-label="موبایل نمبر:">${reminder.mobileNumber || 'دستیاب نہیں'}</td>
+                    <td data-label="پیغام:">${reminder.message}</td>
+                    <td data-label="تاریخ:">${reminder.date || 'کوئی تاریخ نہیں'}</td>
+                    <td data-label="وقت:">${reminder.time || 'کوئی وقت نہیں'}</td>
+                    <td data-label="حالت:" class="${statusClass}">${reminder.status}</td>
+                    <td data-label="کارروائیاں:">
+                        <div class="btn-group">
+                            <button class="btn btn-danger btn-sm" onclick="deleteReminder(${reminder.id})">حذف کریں</button>
+                             ${reminder.mobileNumber ?
+                                 `<button class="btn btn-sm" onclick="sendReminder(${reminder.id}, '${reminder.mobileNumber}', '${encodeURIComponent(reminder.message)}')">پیغام بھیجیں</button>`
+                                 : ''
+                             }
+                             ${reminder.status === 'زیر التواء' ?
+                                 `<button class="btn btn-secondary btn-sm" onclick="markReminderSent(${reminder.id})">ادا شدہ مارک کریں</button>`
+                                 : ''
+                             }
+                        </div>
+                    </td>
+                `;
+            });
+        }
+
+        addReminderButton.addEventListener('click', async () => {
+            const customerName = reminderCustomerSelect.value;
+            const mobileNumber = reminderMobileInput.value.trim(); // Use the auto-filled or manually entered number
+            const message = reminderMessageTextarea.value.trim();
+            const date = reminderDateInput.value;
+            const time = reminderTimeInput.value;
+
+             if (!customerName || !message) {
+                 alert('کسٹمر اور پیغام درکار ہیں۔');
+                 return;
+             }
+
+            const reminder = {
+                customerName: customerName,
+                mobileNumber: mobileNumber,
+                message: message,
+                date: date,
+                time: time,
+                status: 'زیر التواء', // Pending
+                createdAt: Date.now()
+            };
+
+            try {
+                await addData('reminders', reminder);
+                alert('یاددہانی شامل ہو گئی!');
+                reminderCustomerSelect.value = '';
+                reminderMobileInput.value = '';
+                reminderMessageTextarea.value = 'آپ کی ادائیگی واجب الادا ہے۔';
+                reminderDateInput.value = '';
+                reminderTimeInput.value = '';
+                loadReminders(); // Refresh list
+            } catch (error) {
+                console.error('Error adding reminder:', error);
+                alert('یاددہانی شامل کرنے میں خرابی پیش آئی۔');
+            }
+        });
+
+        async function deleteReminder(id) {
+             if (confirm('کیا آپ واقعی اس یاددہانی کو حذف کرنا چاہتے ہیں؟')) {
+                try {
+                    await deleteData('reminders', id);
+                    alert('یاددہانی کامیابی سے حذف ہو گئی!');
+                    loadReminders(); // Refresh list
+                } catch (error) {
+                    console.error('Error deleting reminder:', error);
+                    alert('یاددہانی حذف کرنے میں خرابی پیش آئی۔');
+                }
+            }
+        }
+
+        async function markReminderSent(id) {
+             if (confirm('کیا آپ اس یاددہانی کو "ادا شدہ" مارک کرنا چاہتے ہیں؟')) {
+                try {
+                    const reminder = await getData('reminders', id);
+                    if (reminder) {
+                        reminder.status = 'ادا شدہ'; // Sent
+                        await updateData('reminders', reminder);
+                        alert('یاددہانی "ادا شدہ" مارک ہو گئی!');
+                        loadReminders(); // Refresh list
+                    } else {
+                         alert('یاددہانی نہیں ملی۔');
+                    }
+                } catch (error) {
+                    console.error('Error marking reminder as sent:', error);
+                    alert('یاددہانی کو "ادا شدہ" مارک کرنے میں خرابی پیش آئی۔');
+                }
+            }
+        }
+
+
+        function sendReminder(id, mobileNumber, encodedMessage) {
+             if (!mobileNumber) {
+                 alert('اس کسٹمر کے لیے موبائل نمبر دستیاب نہیں ہے۔');
+                 return;
+             }
+            const message = decodeURIComponent(encodedMessage);
+            const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+
+            // Note: This opens a link. We cannot confirm if the message was actually sent.
+            // The "Mark as Sent" button is for manual tracking.
+
+            if (isMobile) {
+                // Try WhatsApp first
+                 window.open(`https://wa.me/${mobileNumber}?text=${encodedMessage}`, '_blank');
+                // Fallback to SMS (may not work on all devices/browsers) - commented out as WhatsApp is preferred
+                // window.open(`sms:${mobileNumber}?body=${encodedMessage}`);
+            } else {
+                 // For desktop, open WhatsApp Web link
+                 window.open(`https://web.whatsapp.com/send?phone=${mobileNumber}&text=${encodedMessage}`, '_blank');
+                 alert('براہ کرم WhatsApp Web میں پیغام بھیجنے کی تصدیق کریں۔');
+            }
+
+            // Optional: Prompt to mark as sent after a delay
+            // setTimeout(() => {
+            //     if (confirm('کیا آپ نے پیغام بھیج دیا ہے؟ اسے "ادا شدہ" مارک کریں؟')) {
+            //         markReminderSent(id);
+            //     }
+            // }, 3000); // Wait a few seconds
+        }
+
+
+        // --- Admin Settings Tab ---
+        const businessNameInput = document.getElementById('business-name');
+        const businessPhoneInput = document.getElementById('business-phone');
+        const businessEmailInput = document.getElementById('business-email');
+        const businessAddressTextarea = document.getElementById('business-address');
+        const businessLogoInput = document.getElementById('business-logo');
+        const businessLogoPreview = document.getElementById('business-logo-preview');
+        const saveAdminSettingsButton = document.getElementById('save-admin-settings');
+        const exportDataButton = document.getElementById('export-data');
+        const importDataInput = document.getElementById('import-data');
+        const importDataButton = document.getElementById('import-data-button');
+
+
+        async function loadAdminSettings() {
+            try {
+                const settings = await getData('settings', 'businessInfo');
+                if (settings) {
+                    businessNameInput.value = settings.businessName || '';
+                    businessPhoneInput.value = settings.businessPhone || '';
+                    businessEmailInput.value = settings.businessEmail || '';
+                    businessAddressTextarea.value = settings.businessAddress || '';
+                    if (settings.businessLogo) {
+                        businessLogoPreview.src = settings.businessLogo;
+                        businessLogoPreview.style.display = 'block';
+                    } else {
+                        businessLogoPreview.src = ''; // Clear previous preview
+                        businessLogoPreview.style.display = 'none';
+                    }
+                } else {
+                     // Clear fields if no settings exist
+                     businessNameInput.value = '';
+                     businessPhoneInput.value = '';
+                     businessEmailInput.value = '';
+                     businessAddressTextarea.value = '';
+                     businessLogoPreview.src = '';
+                     businessLogoPreview.style.display = 'none';
+                }
+            } catch (error) {
+                 console.error('Error loading admin settings:', error);
+                 alert('سیٹنگز لوڈ کرنے میں خرابی پیش آئی۔');
+            }
+        }
+
+        saveAdminSettingsButton.addEventListener('click', async () => {
+            const settings = {
+                key: 'businessInfo',
+                businessName: businessNameInput.value.trim(),
+                businessPhone: businessPhoneInput.value.trim(),
+                businessEmail: businessEmailInput.value.trim(),
+                businessAddress: businessAddressTextarea.value.trim(),
+                businessLogo: businessLogoPreview.src // Store current base64 data URL
+            };
+
+             // Handle logo file if a new one is selected
+             if (businessLogoInput.files && businessLogoInput.files[0]) {
+                 const reader = new FileReader();
+                 reader.onload = async (e) => {
+                     settings.businessLogo = e.target.result;
+                     try {
+                         await updateData('settings', settings);
+                         alert('سیٹنگز کامیابی سے محفوظ ہو گئیں۔');
+                         loadAdminSettings(); // Reload to show preview
+                         businessLogoInput.value = ''; // Clear file input
+                     } catch (error) {
+                         console.error('Error saving settings with logo:', error);
+                         alert('سیٹنگز محفوظ کرنے میں خرابی پیش آئی۔');
+                     }
+                 };
+                 reader.onerror = (e) => {
+                     console.error('Error reading file:', e);
+                     alert('تصویر پڑھنے میں خرابی پیش آئی۔');
+                 };
+                 reader.readAsDataURL(businessLogoInput.files[0]);
+             } else {
+                  // Save without changing logo if no new file is selected
+                 try {
+                     await updateData('settings', settings);
+                     alert('سیٹنگز کامیابی سے محفوظ ہو گئیں۔');
+                     loadAdminSettings();
+                 } catch (error) {
+                     console.error('Error saving settings:', error);
+                     alert('سیٹنگز محفوظ کرنے میں خرابی پیش آئی۔');
+                 }
+             }
+        });
+
+         businessLogoInput.addEventListener('change', (event) => {
+             const file = event.target.files[0];
+             if (file) {
+                 if (file.size > 500 * 1024) { // Limit file size (e.g., 500KB)
+                     alert('لوگو کی فائل کا سائز 500KB سے کم ہونا چاہیے۔');
+                     businessLogoInput.value = ''; // Clear the input
+                     businessLogoPreview.src = '';
+                     businessLogoPreview.style.display = 'none';
+                     return;
+                 }
+                 const reader = new FileReader();
+                 reader.onload = (e) => {
+                     businessLogoPreview.src = e.target.result;
+                     businessLogoPreview.style.display = 'block';
+                 };
+                 reader.onerror = (e) => {
+                     console.error('Error reading file:', e);
+                     alert('تصویر پڑھنے میں خرابی پیش آئی۔');
+                 };
+                 reader.readAsDataURL(file);
+             } else {
+                 businessLogoPreview.src = '';
+                 businessLogoPreview.style.display = 'none';
+             }
+         });
+
+
+        // --- Backup and Restore ---
+        exportDataButton.addEventListener('click', async () => {
+            try {
+                const receipts = await getAllData('receipts');
+                const settings = await getData('settings', 'businessInfo');
+                const reminders = await getAllData('reminders');
+
+                const data = {
+                    receipts: receipts,
+                    settings: settings,
+                    reminders: reminders,
+                    exportedAt: new Date().toISOString() // Add timestamp
+                };
+
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `pakistani_receipt_data_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                alert('ڈیٹا کامیابی سے ایکسپورٹ ہو گیا۔');
+            } catch (error) {
+                console.error('Error exporting data:', error);
+                alert('ڈیٹا ایکسپورٹ کرنے میں خرابی پیش آئی۔');
+            }
+        });
+
+        importDataButton.addEventListener('click', () => {
+            importDataInput.click(); // Trigger file input click
+        });
+
+        importDataInput.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!confirm('کیا آپ واقعی موجودہ ڈیٹا کو امپورٹ شدہ ڈیٹا سے تبدیل کرنا چاہتے ہیں؟ یہ عمل ناقابل واپسی ہے۔')) {
+                importDataInput.value = ''; // Clear the file input
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+
+                    if (!importedData || !Array.isArray(importedData.receipts) || typeof importedData.settings !== 'object' || !Array.isArray(importedData.reminders)) {
+                        alert('غلط فائل فارمیٹ۔ براہ کرم ایک درست JSON فائل منتخب کریں۔');
+                         importDataInput.value = '';
+                        return;
+                    }
+
+                    // Clear existing data
+                    await clearObjectStore('receipts');
+                    await clearObjectStore('settings');
+                    await clearObjectStore('reminders');
+
+
+                    // Import new data
+                    const transaction = db.transaction(['receipts', 'settings', 'reminders'], 'readwrite');
+                    const receiptsStore = transaction.objectStore('receipts');
+                    const settingsStore = transaction.objectStore('settings');
+                    const remindersStore = transaction.objectStore('reminders');
+
+
+                    importedData.receipts.forEach(receipt => {
+                         // Ensure id is not set for auto-increment to work correctly
+                         delete receipt.id;
+                         // Ensure timestamp exists for sorting
+                         if (!receipt.timestamp) receipt.timestamp = Date.now();
+                         receiptsStore.add(receipt);
+                    });
+
+                    // Settings store has a fixed key 'businessInfo'
+                    if (importedData.settings && importedData.settings.key === 'businessInfo') {
+                         settingsStore.put(importedData.settings);
+                    }
+
+
+                     importedData.reminders.forEach(reminder => {
+                         // Ensure id is not set for auto-increment to work correctly
+                         delete reminder.id;
+                          // Ensure createdAt timestamp exists
+                         if (!reminder.createdAt) reminder.createdAt = Date.now();
+                         remindersStore.add(reminder);
+                    });
+
+
+                    transaction.oncomplete = () => {
+                        alert('ڈیٹا کامیابی سے امپورٹ ہو گیا۔');
+                        importDataInput.value = ''; // Clear the file input
+                        // Reload relevant data after import
+                        openTab('receipts'); // Go back to receipts tab
+                    };
+
+                    transaction.onerror = (event) => {
+                        console.error('Error importing data during transaction:', event.target.error);
+                        alert('ڈیٹا امپورٹ کرنے میں خرابی پیش آئی۔');
+                         importDataInput.value = '';
+                    };
+
+                } catch (error) {
+                    console.error('Error parsing or importing data:', error);
+                    alert('فائل پڑھنے یا ڈیٹا امپورٹ کرنے میں خرابی پیش آئی۔');
+                     importDataInput.value = '';
+                }
+            };
+            reader.onerror = (e) => {
+                 console.error('Error reading import file:', e);
+                 alert('فائل پڑھنے میں خرابی پیش آئی۔');
+                 importDataInput.value = '';
+            };
+            reader.readAsText(file);
+        });
+
+         function clearObjectStore(storeName) {
+             return new Promise((resolve, reject) => {
+                 const transaction = db.transaction([storeName], 'readwrite');
+                 const store = transaction.objectStore(storeName);
+                 const request = store.clear();
+
+                 request.onsuccess = () => resolve();
+                 request.onerror = (event) => {
+                      console.error(`Error clearing store ${storeName}:`, event.target.error);
+                      reject(event.target.error);
+                 };
+             });
+         }
+
+
+         // --- Sample Data ---
+         async function addSampleData() {
+             try {
+                 const receipts = await getAllData('receipts');
+                 if (receipts.length === 0) {
+                     const sampleReceipts = [
+                         {
+                             date: '2023-10-26',
+                             customerName: 'احمد خان',
+                             mobileNumber: '03001234567',
+                             itemModel: 'موبائل فون X',
+                             quantity: 1,
+                             installmentMonths: 6,
+                             totalPrice: 25000,
+                             paymentStatus: 'ادھار',
+                             signature: 'احمد',
+                             timestamp: Date.now() - 86400000 * 5 // 5 days ago
+                         },
+                         {
+                             date: '2023-10-25',
+                             customerName: 'فاطمہ علی',
+                             mobileNumber: '03217654321',
+                             itemModel: 'لیپ ٹاپ Y',
+                             quantity: 1,
+                             installmentMonths: 0,
+                             totalPrice: 80000,
+                             paymentStatus: 'ادا شدہ',
+                             signature: 'فاطمہ',
+                              timestamp: Date.now() - 86400000 * 6 // 6 days ago
+                         },
+                          {
+                             date: '2023-10-26',
+                             customerName: 'احمد خان',
+                             mobileNumber: '03001234567',
+                             itemModel: 'چارجر',
+                             quantity: 2,
+                             installmentMonths: 0,
+                             totalPrice: 1500,
+                             paymentStatus: 'ادا شدہ',
+                             signature: 'احمد',
+                              timestamp: Date.now() - 86400000 * 5 + 3600000 // 5 days ago + 1 hour
+                         },
+                          {
+                             date: '2023-10-24',
+                             customerName: 'عائشہ ملک',
+                             mobileNumber: '03339876543',
+                             itemModel: 'ہیڈ فون Z',
+                             quantity: 1,
+                             installmentMonths: 0,
+                             totalPrice: 3000,
+                             paymentStatus: 'ادھار',
+                             signature: 'عائشہ',
+                              timestamp: Date.now() - 86400000 * 7 // 7 days ago
+                         }
+                     ];
+
+                     const transaction = db.transaction(['receipts'], 'readwrite');
+                     const store = transaction.objectStore('receipts');
+
+                     sampleReceipts.forEach(receipt => {
+                         store.add(receipt);
+                     });
+
+                     transaction.oncomplete = () => {
+                         console.log('Sample data added.');
+                         loadReceipts(); // Refresh UI
+                     };
+                     transaction.onerror = (event) => {
+                         console.error('Error adding sample data transaction:', event.target.error);
+                     };
+                 }
+             } catch (error) {
+                 console.error('Error checking or adding sample data:', error);
+             }
+         }
+
+
+        // --- Initial Load ---
+        openDatabase().then(() => {
+            openTab('receipts'); // Open receipts tab by default
+             addSampleData(); // Add sample data if none exists
+        }).catch(error => {
+            console.error('Failed to initialize app:', error);
+            alert('ایپ شروع کرنے میں خرابی پیش آئی۔');
+        });
+
+    </script>
+</body>
+</html>
+<script>
+const fontUrl = "https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap";
+
+const link = document.createElement("link");
+link.rel = "stylesheet";
+link.href = fontUrl;
+document.head.appendChild(link);
+
+const style = document.createElement("style");
+style.innerHTML = `
+  * {
+    font-family: Calibri, 'Noto Nastaliq Urdu', "Jameel Noori Nastaleeq" !important;
+  }
+  input, textarea, select, button {
+    font-family: Calibri, 'Noto Nastaliq Urdu', "Jameel Noori Nastaleeq" !important;
+  }
+`;
+document.head.appendChild(style);
+</script>
